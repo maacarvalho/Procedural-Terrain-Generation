@@ -6,10 +6,16 @@
 						data="FLOAT" value="1.0" />
 			
 			<attribute name="AMPLITUDE" type="RENDERER" 
-						data="FLOAT" value="0.2" />
+						data="FLOAT" value="1.0" />
 			
 			<attribute name="OCTAVES" type="RENDERER" 
-						data="INT" value="1" />
+						data="INT" value="3" />
+
+			<attribute name="LACUNARITY" type="RENDERER"
+						data="FLOAT" value="2.0" />
+
+      		<attribute name="PERSISTANCE" type="RENDERER"
+						data="FLOAT" value="0.5" />
 
 			<attribute name="TERRAIN_COL_10" type="RENDERER" 
 						data="VEC4" x="1.00000" y="0.98039" z="0.98039" w="1"/>
@@ -31,6 +37,7 @@
 						data="VEC4" x="0.011765" y="0.04706" z="0.32941" w="1"/>
 			<attribute name="WATER_COL_8" type="RENDERER" 
 						data="VEC4" x="0.00392" y="0.00392" z="0.24706" w="1"/>
+
 		</attributes>
 		<scenes>
 			<scene name="TerrainScene" type="Scene">
@@ -139,9 +146,12 @@
 		<window label="Parameters">
 			<!-- <var label="Grid Length" type="GRID" context="TerrainScene::Terrain" component="LENGTH"/>
 			<var label="Grid Divisions" type="GRID" context="TerrainScene::Terrain" component="DIVISIONS"/> -->
-			<var label="Frequency" type="RENDERER" context="CURRENT" component="FREQUENCY" def="min=0 max=5 step=0.1"/>
+			<var label="Frequency" type="RENDERER" context="CURRENT" component="FREQUENCY" def="min=0.1 max=5 step=0.1"/>
 			<var label="Amplitude" type="RENDERER" context="CURRENT" component="AMPLITUDE" def="min=0 max=5 step=0.1"/>
-			<var label="Octaves" type="RENDERER" context="CURRENT" component="OCTAVES" def="min=1 max=8 step=1"/>
+			<var label="Persistance" type="RENDERER" context="CURRENT" component="PERSISTANCE" def="min=0 max=5 step=0.1"/>
+			<var label="Lacunarity" type="RENDERER" context="CURRENT" component="LACUNARITY" def="min=0 max=5 step=0.1"/>
+			<var label="Octaves" type="RENDERER" context="CURRENT" component="OCTAVES" def="min=1 max=20 step=1"/>
+
 			<var label="Color < 1.0" type="RENDERER" context="CURRENT" component="TERRAIN_COL_10" mode="COLOR"/>
 			<var label="Color < 0.8" type="RENDERER" context="CURRENT" component="TERRAIN_COL_8" mode="COLOR"/>
 			<var label="Color < 0.6" type="RENDERER" context="CURRENT" component="TERRAIN_COL_6" mode="COLOR"/>

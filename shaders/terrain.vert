@@ -10,6 +10,9 @@ uniform	vec4 l_dir;	   // global space
 uniform float n_frequency;
 uniform float n_amplitude;
 
+uniform float grid_length;
+uniform uint grid_divisions;
+
 in vec4 position;	// local space
 in vec3 normal;		// local space
 
@@ -63,14 +66,52 @@ float snoise(vec2 v){
 
 void main () {
 	
+  // THIS MAY CHANGE LATER
+  vec4 origin_pos = vec4(0,0,0,0);
+
 	//DataOut.texCoord = texCoord0;
-	DataOut.normal = normalize(m_normal * normal);
 	DataOut.eye = -(m_viewModel * position);
 	DataOut.l_dir = normalize(vec3(m_view * -l_dir));
 
-	DataOut.height = snoise(n_frequency * position.xz);
-  //float random = rand(position.xz);
+  // Calculating the new height (between -1 and 1) using the simplex noise at position.xy
+  DataOut.height = snoise(n_frequency * position.xz); 
+
+  // Updating the current position with the new height
+  vec4 new_pos = position + vec4(0, DataOut.height * n_amplitude, 0, 0);
+
+  float grid_step = grid_length / grid_divisions;
+
+  // Getting the adjacent points to update the normal after height changes
+  vec4 adj_pos_x;
+  vec4 adj_pos_z;
+
+  // Booleans that check if the next adjacent points are off the grid
+  bool at_border_x = position.x + grid_step < origin_pos.x + grid_length / 2;
+  bool at_border_z = position.z + grid_step < origin_pos.z + grid_length / 2;
+
+  if (!at_border_x) adj_pos_x = position + vec4(grid_step,0,0,0);
+  else adj_pos_x = position - vec4(grid_step,0,0,0);
+
+  if (!at_border_z) adj_pos_z = position + vec4(0,0,grid_step,0);
+  else adj_pos_z = position - vec4(0,0,grid_step,0);
+
+  // Calculating the heights of the adjacent points using the simplex
+  adj_pos_x += vec4(0, snoise(adj_pos_x.xz * n_frequency) * n_amplitude, 0, 0);
+  adj_pos_z += vec4(0, snoise(adj_pos_z.xz * n_frequency) * n_amplitude, 0, 0);
+
+  // Calculating the vectors whose cross product will return the normal
+  vec4 vecX = normalize(adj_pos_x - new_pos);
+  vec4 vecZ = normalize(adj_pos_z - new_pos);
+
+  // Recalculating the normal at the current position
+  vec3 new_normal;
+  
+  if ((at_border_x && !at_border_z) || (at_border_z && !at_border_x)) new_normal = cross(vecX.xyz, vecZ.xyz);
+  else new_normal = cross(vecZ.xyz, vecX.xyz);
+
+  DataOut.normal = normalize(m_normal * new_normal);
 
 	// gl_Position = m_pvm * (position + vec4 (0, DataOut.height < 0 ? 0 : DataOut.height * n_amplitude, 0, 0));	
   gl_Position = m_pvm * (position + vec4 (0, DataOut.height * n_amplitude, 0, 0));	
+  // gl_Position = m_pvm * position;	
 }

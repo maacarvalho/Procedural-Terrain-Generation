@@ -146,8 +146,25 @@
 							 component="PROJECTION_VIEW_MODEL" />
 					 
 					<valueof uniform="n_frequency"
-							 type="RENDERER" context="CURRENT"
-							 component="FREQUENCY" />
+							type="RENDERER" context="CURRENT"
+							component="FREQUENCY" />
+
+					<valueof uniform="n_amplitude"
+							type="RENDERER" context="CURRENT"
+							component="AMPLITUDE" /> 
+
+					<valueof uniform="lacunarity"
+							type="RENDERER" context="CURRENT"
+							component="LACUNARITY" />
+					
+					<valueof uniform="persistance"
+							type="RENDERER" context="CURRENT"
+							component="PERSISTANCE" />
+          
+          			<valueof uniform="octaves"
+               				type="RENDERER" context="CURRENT"
+               				component="OCTAVES" />
+
 				</values>
 			</shader>
 		</material>

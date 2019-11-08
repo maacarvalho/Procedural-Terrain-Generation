@@ -41,7 +41,7 @@
 		</attributes>
 		<scenes>
 			<scene name="TerrainScene" type="Scene">
-				<geometry name="Terrain" type="GRID" DIVISIONS=200 LENGTH=5 material="TerrainMat">
+				<geometry name="Terrain" type="GRID" DIVISIONS=200 LENGTH=20 material="TerrainMat">
 				</geometry>
 			</scene>
 			<!-- <scene name="SphereScene" type="Scene">

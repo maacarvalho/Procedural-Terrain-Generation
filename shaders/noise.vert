@@ -3,6 +3,10 @@
 uniform	mat4 m_pvm;
 
 uniform float n_frequency;
+uniform float n_amplitude;
+uniform int octaves;
+uniform float persistance;
+uniform float lacunarity;
 
 in vec4 position;	// local space
 
@@ -49,11 +53,37 @@ float snoise(vec2 v){
   return 130.0 * dot(m, g);
 }
 
+float height (vec2 position) {
+
+  float freq = n_frequency, amp = n_amplitude, height = 0;
+	
+	for(int i = 0; i < octaves; i++, amp *= persistance, freq *= lacunarity) {
+		
+    height += snoise(freq * position) * amp;
+	
+  }
+
+  return height;
+  
+}
+
+float max_height () {
+
+  float amp = n_amplitude, height = 0;
+	
+	for(int i = 0; i < octaves; i++, amp *= persistance) {
+		
+    height += 1.0 * amp;
+	
+  }
+
+  return height;
+
+}
+
 void main () {
 	
-  float noise = snoise(n_frequency * position.xz);
-  
-  color = vec4(1,1,1,1) * (noise * 0.5 + 0.5);
+  color = vec4(1,1,1,1) * (height(position.xz) / max_height() * 0.5 + 0.5);
 	//float random = rand(position.xz);
 
 	gl_Position = m_pvm * position;	

@@ -9,6 +9,9 @@ uniform	vec4 l_dir;	   // global space
 
 uniform float n_frequency;
 uniform float n_amplitude;
+uniform int octaves;
+uniform float persistance;
+uniform float lacunarity;
 
 uniform float grid_length;
 uniform uint grid_divisions;
@@ -64,6 +67,34 @@ float snoise(vec2 v){
   return 130.0 * dot(m, g);
 }
 
+float height (vec2 position) {
+
+  float freq = n_frequency, amp = n_amplitude, height = 0;
+	
+	for(int i = 0; i < octaves; i++, amp *= persistance, freq *= lacunarity) {
+		
+    height += snoise(freq * position) * amp;
+	
+  }
+
+  return height;
+  
+}
+
+float max_height () {
+
+  float amp = n_amplitude, height = 0;
+	
+	for(int i = 0; i < octaves; i++, amp *= persistance) {
+		
+    height += 1.0 * amp;
+	
+  }
+
+  return height;
+
+}
+
 void main () {
 	
   // THIS MAY CHANGE LATER
@@ -73,11 +104,11 @@ void main () {
 	DataOut.eye = -(m_viewModel * position);
 	DataOut.l_dir = normalize(vec3(m_view * -l_dir));
 
-  // Calculating the new height (between -1 and 1) using the simplex noise at position.xy
-  DataOut.height = snoise(n_frequency * position.xz); 
+  // Calculatin the new height of our current position
+  vec4 new_pos = position + vec4(0, height(position.xz), 0, 0);
 
-  // Updating the current position with the new height
-  vec4 new_pos = position + vec4(0, DataOut.height * n_amplitude, 0, 0);
+  // Sending the new height normalized between -1 and 1
+  DataOut.height = new_pos.y / max_height();
 
   float grid_step = grid_length / grid_divisions;
 
@@ -96,8 +127,8 @@ void main () {
   else adj_pos_z = position - vec4(0,0,grid_step,0);
 
   // Calculating the heights of the adjacent points using the simplex
-  adj_pos_x += vec4(0, snoise(adj_pos_x.xz * n_frequency) * n_amplitude, 0, 0);
-  adj_pos_z += vec4(0, snoise(adj_pos_z.xz * n_frequency) * n_amplitude, 0, 0);
+  adj_pos_x += vec4(0, height(adj_pos_x.xz), 0, 0);
+  adj_pos_z += vec4(0, height(adj_pos_z.xz), 0, 0);
 
   // Calculating the vectors whose cross product will return the normal
   vec4 vecX = normalize(adj_pos_x - new_pos);
@@ -111,7 +142,6 @@ void main () {
 
   DataOut.normal = normalize(m_normal * new_normal);
 
-	// gl_Position = m_pvm * (position + vec4 (0, DataOut.height < 0 ? 0 : DataOut.height * n_amplitude, 0, 0));	
-  gl_Position = m_pvm * (position + vec4 (0, DataOut.height * n_amplitude, 0, 0));	
-  // gl_Position = m_pvm * position;	
+	gl_Position = m_pvm * new_pos;	
+  
 }

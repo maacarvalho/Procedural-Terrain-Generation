@@ -69,6 +69,10 @@
 					<valueof uniform="n_amplitude"
 							type="RENDERER" context="CURRENT"
 							component="AMPLITUDE" /> 
+					
+					<valueof uniform="n_power"
+							type="RENDERER" context="CURRENT"
+							component="POWER" /> 
 
 					<valueof uniform="lacunarity"
 							type="RENDERER" context="CURRENT"
@@ -178,6 +182,10 @@
 					<valueof uniform="l_dir" 
 							 type="LIGHT" context="Sun"
 							 component="DIRECTION" />
+
+					<valueof uniform="water_level"
+               				type="RENDERER" context="CURRENT"
+               				component="WATER_HEIGHT" />
 
 				</values>
 			</shader>

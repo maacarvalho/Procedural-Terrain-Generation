@@ -3,16 +3,19 @@
 	<assets>
 		<attributes>
 			<attribute name="FREQUENCY" type="RENDERER" 
-						data="FLOAT" value="0.2" />
+						data="FLOAT" value="0.1" />
 			
 			<attribute name="AMPLITUDE" type="RENDERER" 
-						data="FLOAT" value="0.8" />
+						data="FLOAT" value="1" />
+
+			<attribute name="POWER" type="RENDERER" 
+						data="FLOAT" value="3.5" />
 			
 			<attribute name="OCTAVES" type="RENDERER" 
-						data="INT" value="8" />
+						data="INT" value="10" />
 
 			<attribute name="LACUNARITY" type="RENDERER"
-						data="FLOAT" value="1.8" />
+						data="FLOAT" value="2" />
 
       		<attribute name="PERSISTANCE" type="RENDERER"
 						data="FLOAT" value="0.5" />
@@ -62,6 +65,9 @@
 			<attribute name="WATER_COL_8" type="RENDERER" 
 						data="VEC4" x="0.00392" y="0.00392" z="0.24706" w="1"/> -->
 
+			<attribute name="WATER_HEIGHT" type="RENDERER" 
+						data="FLOAT" value="-1.9" /> -->
+
 		</attributes>
 
 		<scenes>
@@ -74,14 +80,14 @@
 				<geometry name="Water" type="GRID" DIVISIONS=1 LENGTH=20 material="WaterMat">
 				</geometry>
 			</scene>
-			<scene name="SkyDomeScene" >
+			<scene name="SkyDomeScene" type="Scene">
 				<TRANSLATE x=0 y=-1 z=0 />
 				<SCALE x=10 y=10 z=10 />				
 				<geometry name="SkyDome" type="SPHERE" SLICES=30 STACKS=30 material="SkyMat">
 				</geometry>
 			</scene>
 			<scene name="NoiseScene" type="Scene">
-				<geometry name="Noise" type="GRID" DIVISIONS=200 LENGTH=10 material="NoiseMat">
+				<geometry name="Noise" type="GRID" DIVISIONS=100 LENGTH=10 material="NoiseMat">
 					<ROTATE x=1 y=0 z=0 w=-90/>
 				</geometry>
 			</scene>
@@ -104,6 +110,15 @@
 		</viewports>
 		
 		<cameras>
+			<camera name="GodCamera" >
+				<viewport name="MainViewport" />
+				<TYPE value="PERSPECTIVE"/>
+				<FOV value=60/>
+				<NEAR value= 0.1/>
+				<FAR value= 1000/>
+				<POSITION x=0 y=2.75 z=-8 />  
+				<LOOK_AT_POINT x=0 y=0 z=0 />
+			</camera>
 			<camera name="GroundCamera" >
 				<viewport name="MainViewport" />
 				<TYPE value="PERSPECTIVE"/>
@@ -140,7 +155,8 @@
 		<pipeline name="main" default="true" defaultCamera="GroundCamera">
 			<pass class="default" name="GroundView" >
 				<viewport name="MainViewport" />
-				<camera name="GroundCamera" />
+				<!-- <camera name="GroundCamera" /> -->
+				<camera name="GodCamera" />
 				<scenes>
 					<scene name="TerrainScene" />
 					<!-- <scene name="WaterScene" /> -->
@@ -177,14 +193,19 @@
 
 	<interface>
 		<window label="Parameters">
-			<!-- <var label="Grid Length" type="GRID" context="TerrainScene::Terrain" component="LENGTH"/>
-			<var label="Grid Divisions" type="GRID" context="TerrainScene::Terrain" component="DIVISIONS"/> -->
+			<var label="Grid Length" type="GRID" context="TerrainScene::Terrain" component="LENGTH"/>
+			<var label="Grid Divisions" type="GRID" context="TerrainScene::Terrain" component="DIVISIONS"/>
+			
+			<var label="Stacks" type="SPHERE" context="SkyDomeScene::SkyDome" component="STACKS" />
+			<var label="Slices" type="SPHERE" context="SkyDomeScene::SkyDome" component="SLICES" />
+			<!-- <var label="Slices" type="SPHERE" context="CubeLand::Sphere" component="SLICES" /> -->
 
-			<!-- <var label="Water Height" type="SCENE" context="WaterScene" component="Y"/> -->
+			<var label="Water Height" type="RENDERER" context="CURRENT" component="WATER_HEIGHT" def="min=-3 max=3 step=0.01"/>
 			<!-- <var label="Water Grid Pos" type="SCENE_OBJECT" context="WaterScene::Water" component="TRANSLATE" def="min=-1 max=1 step=0.1"/> -->
 			
 			<var label="Frequency" type="RENDERER" context="CURRENT" component="FREQUENCY" def="min=0.1 max=5 step=0.1"/>
 			<var label="Amplitude" type="RENDERER" context="CURRENT" component="AMPLITUDE" def="min=0 max=5 step=0.1"/>
+			<var label="Power" type="RENDERER" context="CURRENT" component="POWER" def="min=0.1 max=5 step=0.1"/>
 			<var label="Persistance" type="RENDERER" context="CURRENT" component="PERSISTANCE" def="min=0 max=5 step=0.1"/>
 			<var label="Lacunarity" type="RENDERER" context="CURRENT" component="LACUNARITY" def="min=0 max=5 step=0.1"/>
 			<var label="Octaves" type="RENDERER" context="CURRENT" component="OCTAVES" def="min=1 max=20 step=1"/>

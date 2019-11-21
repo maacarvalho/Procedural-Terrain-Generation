@@ -9,6 +9,7 @@ uniform	vec4 l_dir;	   // global space
 
 uniform float n_frequency;
 uniform float n_amplitude;
+uniform float n_power;
 uniform int octaves;
 uniform float persistance;
 uniform float lacunarity;
@@ -22,7 +23,7 @@ in vec3 normal;		// local space
 
 // the data to be sent to the fragment shader
 out Data {
-	vec4 eye;
+  vec4 eye;
 	vec3 normal;
 	vec3 l_dir;
   float height;
@@ -107,20 +108,6 @@ float snoise(vec2 v)
 //
 /////////////////////////////////////////////////////////////////////////
 
-float height (vec2 position) {
-
-  float freq = n_frequency, amp = n_amplitude, height = 0;
-	
-	for(int i = 0; i < octaves; i++, amp *= persistance, freq *= lacunarity) {
-		
-    height += snoise(freq * position) * amp;
-	
-  }
-
-  return height;
-  
-}
-
 float max_height () {
 
   float amp = n_amplitude, height = 0;
@@ -133,6 +120,28 @@ float max_height () {
 
   return height;
 
+}
+
+float height (vec2 position) {
+
+  float freq = n_frequency, amp = n_amplitude, height = 0, max_height = max_height();
+	
+  // Calculating height using snoise ( height -> [-max_height, max_heigth] )
+	for(int i = 0; i < octaves; i++, amp *= persistance, freq *= lacunarity) {
+		
+    height += snoise(freq * position) * amp;
+	
+  }
+
+  // Height -> [0,1]
+  height = height / max_height * 0.5 + 0.5;
+
+  // Applying the power (height -> [0, 1])
+  height = pow(height, n_power);
+
+  // Height -> [-1, max_height - 1]
+  return height * 2 * max_height - 1;
+  
 }
 
 void main () {
@@ -149,8 +158,8 @@ void main () {
   vec4 new_pos = position + vec4(0, height(position.xz), 0, 0);
   //vec4 new_pos = position + vec4(0, height(height_pos), 0, 0) + origin_pos;
 
-  // Sending the new height normalized between -1 and 1
-  DataOut.height = new_pos.y / max_height();
+  // Sending the new height normalized between 0 and 1
+  DataOut.height = (new_pos.y + 1) / max_height();
 
   float grid_step = grid_length / grid_divisions;
 

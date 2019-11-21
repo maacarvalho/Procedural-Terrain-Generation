@@ -6,6 +6,8 @@ uniform	mat4 m_view;
 uniform	mat3 m_normal;
 uniform	vec3 l_dir; //Espaço global
 
+uniform float water_level;
+
 in vec3 normal;		// local space
 
 in vec4 position;	// local space
@@ -21,6 +23,7 @@ out Data {
 
 
 void main () {
+	
 	DataOut.normal = normalize(m_normal * normal);
 	DataOut.eye = -(m_viewModel * position);
 
@@ -28,6 +31,8 @@ void main () {
 	// Pass-through the texture coordinates
 	DataOut.texCoord = texCoord0;
 
+	vec4 new_position = position + vec4(0, water_level, 0, 0);
+
 	// transform the vertex coordinates
-	gl_Position = m_pvm * position;	
+	gl_Position = m_pvm * new_position;	
 }

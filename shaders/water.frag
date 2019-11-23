@@ -3,7 +3,7 @@
 uniform	vec4 specular;
 uniform	float shininess;
 
-uniform sampler2D tex;
+uniform sampler2D water_tex;
 
 in Data {
 	vec2 texCoord;
@@ -34,5 +34,6 @@ void main() {
 		// compute the specular term into spec
 		spec = specular * pow(intSpec,shininess);
 	}
-	outputF = max(intensity *  texture(tex,DataIn.texCoord) + spec, texture(tex,DataIn.texCoord) * 0.25);
+
+	outputF = texture(water_tex, DataIn.texCoord);
 }

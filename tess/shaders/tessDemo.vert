@@ -16,7 +16,7 @@ void main() {
 
     // HARDCODED
 
-    int instances = 25;
+    int instances = 15625;
     int length = 2;
 
     int side = int(sqrt(instances));

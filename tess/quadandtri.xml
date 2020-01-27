@@ -2,8 +2,8 @@
 <project name="Tessellation Partition" width="512" height="512">
 	<assets>
 		<attributes>
-			<attribute name="tessellation" data="FLOAT" type="RENDERER" value=16 />
-			<attribute name="tessellationRatio" data="FLOAT" type="RENDERER" value=0.5 />
+			<attribute name="tessellation" data="FLOAT" type="RENDERER" value=64 />
+			<attribute name="tessellationRatio" data="FLOAT" type="RENDERER" value=0.7 />
 		</attributes>
 		
 		<scenes>
@@ -41,7 +41,7 @@
 	<pipelines>
 		<pipeline name="Quad and Tri" default="true">
 			<pass class="default" name="passQuad">
-				<scenes instances=25>
+				<scenes instances=15625>
 					<scene name="Square" />
 				</scenes>
 				<camera name="MainCamera" />

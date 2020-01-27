@@ -2,8 +2,12 @@
 
 uniform	mat4 m_pvm;
 uniform	mat4 m_viewModel;
+uniform	mat4 m_model;
+uniform	mat4 m_projectionView;
 uniform	mat4 m_view;
 uniform	mat3 m_normal;
+
+uniform vec4 camera_pos; // global space
 
 uniform	vec4 l_dir;	   // global space
 
@@ -31,6 +35,13 @@ out Data {
   float inclination;
   vec2 texCoord;
 } DataOut;
+
+mat3 mat4_2_mat3(mat4 m4) {
+  return mat3(
+      m4[0][0], m4[0][1], m4[0][2],
+      m4[1][0], m4[1][1], m4[1][2],
+      m4[2][0], m4[2][1], m4[2][2]);
+}
 
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
@@ -149,20 +160,22 @@ float height (vec2 position) {
 }
 
 void main () {
-	
-  vec4 origin_pos = vec4(0, 0, 0, 0);
 
 	DataOut.texCoord = texCoord0;
 	DataOut.eye = -(m_viewModel * position);
 	DataOut.l_dir = normalize(vec3(m_view * -l_dir));
 
-  vec2 height_pos = position.xz;
+  //vec4 pos_world = (m_model * position) + vec4(camera_pos.x, camera_pos.y, camera_pos.z + 8, 0);
+  vec4 pos_world = (m_model * position) + vec4(camera_pos.x, 0, camera_pos.z + 8, 0);
 
-  // Calculatin the new height of our current position
-  vec4 new_pos = position + vec4(0, height(position.xz), 0, 0);
-  //vec4 new_pos = position + vec4(0, height(height_pos), 0, 0) + origin_pos;
+  vec2 height_pos = pos_world.xz;
+
+  // Calculatin the new height of our current pos_world
+  vec4 new_pos = pos_world + vec4(0, height(pos_world.xz), 0, 0);
+  //vec4 new_pos = pos_world + vec4(0, height(height_pos), 0, 0) + origin_pos;
 
   // Sending the new height normalized between 0 and 1
+  //DataOut.height = (new_pos.y + 1 - camera_pos.y) / max_height();
   DataOut.height = (new_pos.y + 1) / max_height();
 
   float grid_step = grid_length / grid_divisions;
@@ -172,14 +185,14 @@ void main () {
   vec4 adj_pos_z;
 
   // Booleans that check if the next adjacent points are off the grid
-  bool at_border_x = position.x + grid_step < origin_pos.x + grid_length / 2;
-  bool at_border_z = position.z + grid_step < origin_pos.z + grid_length / 2;
+  bool at_border_x = pos_world.x + grid_step < camera_pos.x + grid_length / 2;
+  bool at_border_z = pos_world.z + grid_step < camera_pos.z + grid_length / 2;
 
-  if (!at_border_x) adj_pos_x = position + vec4(grid_step,0,0,0);
-  else adj_pos_x = position - vec4(grid_step,0,0,0);
+  if (!at_border_x) adj_pos_x = pos_world + vec4(grid_step,0,0,0);
+  else adj_pos_x = pos_world - vec4(grid_step,0,0,0);
 
-  if (!at_border_z) adj_pos_z = position + vec4(0,0,grid_step,0);
-  else adj_pos_z = position - vec4(0,0,grid_step,0);
+  if (!at_border_z) adj_pos_z = pos_world + vec4(0,0,grid_step,0);
+  else adj_pos_z = pos_world - vec4(0,0,grid_step,0);
 
   // Calculating the heights of the adjacent points using the simplex
   adj_pos_x += vec4(0, height(adj_pos_x.xz), 0, 0);
@@ -189,15 +202,16 @@ void main () {
   vec4 vecX = normalize(adj_pos_x - new_pos);
   vec4 vecZ = normalize(adj_pos_z - new_pos);
 
-  // Recalculating the normal at the current position
+  // Recalculating the normal at the current pos_world
   vec3 new_normal;
   
   if ((at_border_x && !at_border_z) || (at_border_z && !at_border_x)) new_normal = cross(vecX.xyz, vecZ.xyz);
   else new_normal = cross(vecZ.xyz, vecX.xyz);
 
-  DataOut.normal = normalize(m_normal * new_normal);
+  //DataOut.normal = normalize(m_normal * new_normal);
+  DataOut.normal = normalize(transpose(inverse(mat4_2_mat3(m_view))) * new_normal);  
   DataOut.inclination = new_normal.y;
 
-  gl_Position = m_pvm * new_pos;	
+  gl_Position = m_projectionView * new_pos;	
   
 }

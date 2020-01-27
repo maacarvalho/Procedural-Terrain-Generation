@@ -21,7 +21,6 @@
 
 	<shaders>
 		<shader name="terrain" 		vs = "../shaders/terrain.vert" 
-									gs = "../shaders/terrain.geom"
 									ps = "../shaders/terrain.frag" />
 
 		<shader name="water" 		vs = "../shaders/water.vert" 

@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<materialLib name="tessellation">
+
+	<shaders>
+		<shader name="tessQuad" 	ps="shaders/tessDemo.frag" 
+									tc="shaders/simpleQuad.tesc"
+									te="shaders/simpleQuad.tese"
+									vs="shaders/tessDemo.vert" />
+	</shaders>
+	
+	
+	<materials>
+	
+		<material name="tessQuad">
+			<shader name="tessQuad">
+				<values>
+					<valueof uniform="projViewModelMatrix"  type="RENDERER" context="CURRENT" 
+														component="PROJECTION_VIEW_MODEL" />
+
+					<valueof uniform="tessellationRatio" 		type="RENDERER" context="CURRENT" 
+														component="tessellationRatio"  />
+														
+					<valueof uniform="tessellation" 		type="RENDERER" context="CURRENT" 
+														component="tessellation"  />
+				</values>
+			</shader>
+		</material>		
+
+		
+	</materials>
+</materialLib>

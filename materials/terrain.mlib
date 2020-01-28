@@ -178,13 +178,10 @@
 		<material name="SkyDome">
 			<shader name="skydome">
 				<values>
-					<valueof uniform="m_pvm" 
-							 type="RENDERER" context="CURRENT" 
-							 component="PROJECTION_VIEW_MODEL" />
 					<valueof uniform="m_model" 
 							type="RENDERER" context="CURRENT" 
 							component="MODEL" />
-					<valueof uniform="m_projectionView" 
+					<valueof uniform="m_projView" 
 							type="RENDERER" context="CURRENT" 
 							component="PROJECTION_VIEW" />
 					<valueof uniform="tex"

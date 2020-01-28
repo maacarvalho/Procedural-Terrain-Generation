@@ -67,7 +67,7 @@
 			<scene name="SkyDomeScene" type="Scene">
 				<TRANSLATE x=0 y=-1 z=0 />
 				<!-- <SCALE x=50 y=50 z=50 /> -->
-				<SCALE x=10 y=10 z=10 />
+				<SCALE x=125 y=125 z=125 />
 				<geometry name="SkyDome" type="SPHERE" SLICES=30 STACKS=30 material="SkyMat">
 				</geometry>
 			</scene>
@@ -129,12 +129,26 @@
 	
 	<pipelines>
 		<pipeline name="main" default="true" defaultCamera="GroundCamera">
+			<pass class="default" name="GroundViewSky" >
+				<viewport name="MainViewport" />
+				<camera name="GroundCamera" />
+				<scenes>					
+					<scene name="SkyDomeScene" />
+					<!-- <scene name="AxisScene" /> -->
+				</scenes>			
+				<lights>
+					<light name="Sun" />
+				</lights>
+				<materialMaps>
+					<map fromMaterial="SkyMat" toMaterial="SkyDome" toLibrary="TerrainLib" />
+				</materialMaps>
+			</pass>
 			<pass class="default" name="GroundView" >
+				<COLOR_CLEAR value = false />
+				<DEPTH_CLEAR value = false />
 				<viewport name="MainViewport" />
 				<camera name="GroundCamera" />
 				<scenes instances=15625>
-					<!-- <scene name="SkyDomeScene" /> -->
-					<!-- <scene name="AxisScene" /> -->
 					<scene name="TerrainScene" />
 				</scenes>
 				<lights>
@@ -142,7 +156,6 @@
 				</lights>
 				<materialMaps>
 					<map fromMaterial="*" toMaterial="Terrain" toLibrary="TerrainLib" />
-					<!-- <map fromMaterial="SkyMat" toMaterial="SkyDome" toLibrary="TerrainLib" /> -->
 				</materialMaps>
 			</pass>
 			<!-- <pass class="default" name="passQuadNormal">				

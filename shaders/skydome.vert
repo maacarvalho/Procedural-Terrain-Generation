@@ -1,7 +1,6 @@
 #version 330
 
-uniform	mat4 m_pvm;
-uniform	mat4 m_projectionView;
+uniform	mat4 m_projView;
 uniform	mat4 m_model;
 
 in vec4 position;	// local space
@@ -25,8 +24,7 @@ void main () {
 	DataOut.height = position.y;
 
 	// Transform the vertex coordinates
-	//gl_Position = m_projectionView * ((m_model * position) + vec4(camera_pos.x, camera_pos.y, camera_pos.z + 8, 0));	
-	gl_Position = m_projectionView * ((m_model * position) + vec4(camera_pos.x, 0, camera_pos.z + 8, 0));	
-
-	//gl_Position = m_pvm * (position + vec4(camera_pos.x, 0, camera_pos.z + 8 , 0));	
+	//gl_Position = m_projView * ((m_model * position) + vec4(camera_pos.x, 0, camera_pos.z + 8, 0));	
+	gl_Position = m_projView * (m_model * position);	
+	
 }

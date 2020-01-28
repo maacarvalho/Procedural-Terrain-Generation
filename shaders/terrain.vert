@@ -46,13 +46,13 @@ void main() {
                         (camera_pos.z > 0) ? floor(camera_pos.z / DataOut.patch_length) * DataOut.patch_length : ceil(camera_pos.z / DataOut.patch_length) * DataOut.patch_length,
                         0);
 
-    DataOut.origin = vec4(0, 0, 0, 1) * m_model + // To Global state
-                     camera_offset; // Moving with camera
+    DataOut.origin = vec4(0, 0, 0, 1) * m_model;/* + // To Global state
+                     camera_offset; // Moving with camera*/
 
     gl_Position = position * m_model + // To Global state
                   vec4(-offset, 0, -offset, 0) + // Centering the grid on (0,0)
-                  vec4(x * DataOut.patch_length, 0, z * DataOut.patch_length, 0) + // Current patch place
-                  camera_offset; // Moving with camera
+                  vec4(x * DataOut.patch_length, 0, z * DataOut.patch_length, 0);/* + // Current patch place
+                  camera_offset; // Moving with camera*/
 }
 
 

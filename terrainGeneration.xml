@@ -3,6 +3,14 @@
 	<assets>
 		<attributes>
 
+			<!-- Tessellation Related Attributes for the Terrain -->
+
+			<attribute name="MAX_TESSELLATION" 
+						data="FLOAT" type="RENDERER" value="64" />
+
+			<attribute name="TESSELLATION_DECREASE_RATIO" 
+						data="FLOAT" type="RENDERER" value="0.9" />
+
 			<!-- Height Related Attributes for the Terrain -->
 
 			<attribute name="HEIGHT_NOISE_FREQUENCY" type="RENDERER" 
@@ -25,7 +33,7 @@
 
 			<!-- Texture Related Attributes for the Terrain -->
 
-			<attribute name="TEXTURE_NOISE_FREQUENCY" type="RENDERER" 
+			<!-- <attribute name="TEXTURE_NOISE_FREQUENCY" type="RENDERER" 
 						data="FLOAT" value="0.5" />
 			
 			<attribute name="TEXTURE_NOISE_AMPLITUDE" type="RENDERER" 
@@ -44,26 +52,17 @@
 						data="FLOAT" value="0.5" />
 			
 			<attribute name="TEXTURE_DIVISIONS" type="RENDERER"
-						data="INT" value="1" />
-
-			<!-- <attribute name="ORIGIN" type="RENDERER" 
-						data="VEC2" x="0" y="0" /> -->
-
-			<attribute name="WATER_HEIGHT" type="RENDERER" 
-						data="FLOAT" value="-1.9" /> -->
+						data="INT" value="1" /> -->
 
 		</attributes>
 
 		<scenes>
 			<scene name="TerrainScene" type="Scene">
-				<!-- <geometry name="Terrain" type="GRID" DIVISIONS=1000 LENGTH=100 material="TerrainMat"> -->
-				<geometry name="Terrain" type="GRID" DIVISIONS=1000 LENGTH=20 material="TerrainMat">
-				</geometry>
+				<file name="models/square.patch"/> 
+				<ROTATE x=1 y=0 z=0 w=90/>
 			</scene>
-			<scene name="WaterScene" type="Scene">
-				<TRANSLATE x=0 y=0 z=0 w=0 />
-				<geometry name="Water" type="GRID" DIVISIONS=10 LENGTH=20 material="WaterMat">
-				</geometry>
+			<scene name="TerrainSceneNormals" type="OctreeByMat">
+				<file name="models/square.patch"/> 
 			</scene>
 			<scene name="SkyDomeScene" type="Scene">
 				<TRANSLATE x=0 y=-1 z=0 />
@@ -133,22 +132,34 @@
 			<pass class="default" name="GroundView" >
 				<viewport name="MainViewport" />
 				<camera name="GroundCamera" />
-				<scenes>
-					<scene name="TerrainScene" />
-					<!-- <scene name="WaterScene" /> -->
-					<scene name="SkyDomeScene" />
+				<scenes instances=15625>
+					<!-- <scene name="SkyDomeScene" /> -->
 					<!-- <scene name="AxisScene" /> -->
+					<scene name="TerrainScene" />
 				</scenes>
 				<lights>
 					<light name="Sun" />
 				</lights>
 				<materialMaps>
-					<map fromMaterial="TerrainMat" toMaterial="Terrain" toLibrary="TerrainLib" />
-					<map fromMaterial="WaterMat" toMaterial="Water" toLibrary="TerrainLib" />
-					<map fromMaterial="SkyMat" toMaterial="SkyDome" toLibrary="TerrainLib" />
+					<map fromMaterial="*" toMaterial="Terrain" toLibrary="TerrainLib" />
+					<!-- <map fromMaterial="SkyMat" toMaterial="SkyDome" toLibrary="TerrainLib" /> -->
 				</materialMaps>
 			</pass>
-			<pass class="default" name="NoiseView" >
+			<!-- <pass class="default" name="passQuadNormal">				
+				<COLOR_CLEAR value=false />				
+				<DEPTH_CLEAR value=false />				
+				<scenes instances=15625>					
+					<scene name="TerrainSceneNormals" />				
+				</scenes>				
+				<camera name="MainCamera" />				
+				<lights>					
+					<light name="Sun" />			
+				</lights>			
+				<materialMaps>
+					<map fromMaterial="*" toLibrary="TerrainLib" toMaterial="TerrainNormals" />
+				</materialMaps>						
+			</pass>	 -->
+			<!-- <pass class="default" name="NoiseView" >
 				<viewport name="NoiseViewport" />
 				<camera name="NoiseCamera" />
 				<scenes>
@@ -157,20 +168,15 @@
 				<materialMaps>
 					<map fromMaterial="NoiseMat" toMaterial="Noise" toLibrary="TerrainLib" />
 				</materialMaps>
-			</pass>
+			</pass> -->
 		</pipeline>
 	</pipelines>
 
 	<interface>
 		<window label="Geometry">
 			
-			<var label="Grid Length" type="GRID" context="TerrainScene::Terrain" component="LENGTH"/>
-			<var label="Grid Divisions" type="GRID" context="TerrainScene::Terrain" component="DIVISIONS"/>
-			
 			<var label="Stacks" type="SPHERE" context="SkyDomeScene::SkyDome" component="STACKS" />
 			<var label="Slices" type="SPHERE" context="SkyDomeScene::SkyDome" component="SLICES" />
-			
-			<var label="Water Height" type="RENDERER" context="CURRENT" component="WATER_HEIGHT" def="min=-3 max=3 step=0.01"/>
 
 		</window>	
 		<window label="Height">
@@ -182,17 +188,13 @@
 			<var label="Lacunarity" type="RENDERER" context="CURRENT" component="HEIGHT_NOISE_LACUNARITY" def="min=0 max=5 step=0.1"/>
 			<var label="Octaves" type="RENDERER" context="CURRENT" component="HEIGHT_NOISE_OCTAVES" def="min=1 max=20 step=1"/>
 			
-			<!-- <var label="Origin" type="RENDERER" context="CURRENT" component="ORIGIN" /> -->
-			
 		</window>
-		<window label="Texture">
+		<window label="Tessellation">
 			
-			<var label="Frequency" type="RENDERER" context="CURRENT" component="TEXTURE_NOISE_FREQUENCY" def="min=0.1 max=5 step=0.1"/>
-			<var label="Power" type="RENDERER" context="CURRENT" component="TEXTURE_NOISE_POWER" def="min=0.1 max=5 step=0.1"/>
-			<var label="Persistance" type="RENDERER" context="CURRENT" component="TEXTURE_NOISE_PERSISTANCE" def="min=0 max=5 step=0.1"/>
-			<var label="Lacunarity" type="RENDERER" context="CURRENT" component="TEXTURE_NOISE_LACUNARITY" def="min=0 max=5 step=0.1"/>
-			<var label="Octaves" type="RENDERER" context="CURRENT" component="TEXTURE_NOISE_OCTAVES" def="min=1 max=20 step=1"/>
-			<var label="Divisions" type="RENDERER" context="CURRENT" component="TEXTURE_DIVISIONS" def="min=1 max=1000 step=1"/>
+			<var label="Max Tessellation" type="RENDERER" context="CURRENT" component="MAX_TESSELLATION" 
+				def="min=1 max=64 step=1"/>
+			<var label="Tessellation Decrease Ratio" type="RENDERER" context="CURRENT" component="TESSELLATION_DECREASE_RATIO" 
+				def="min=0.01 max=1.0 step=0.01"/>
 
 		</window>
 	</interface>

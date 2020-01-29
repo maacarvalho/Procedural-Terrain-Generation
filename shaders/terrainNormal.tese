@@ -2,8 +2,8 @@
 
 layout(quads, fractional_odd_spacing, ccw) in;
 
-uniform	mat4 projectionViewMatrix;
-uniform mat4 viewMatrix;
+uniform	mat4 m_projView;
+uniform mat4 m_view;
 
 uniform vec4 light_dir;
 
@@ -164,9 +164,10 @@ void main() {
 	position.y = height(position.xz);
 	
 	// Getting the adjacent points to update the normal after height changes
-	vec4 adj_pos_left = 	position - vec4(DataIn[0].patch_length / DataIn[0].ringTess, 0, 0, 0); adj_pos_left.y = height(adj_pos_left.xz);
-	vec4 adj_pos_right = 	position + vec4(DataIn[0].patch_length / DataIn[0].ringTess, 0, 0, 0); adj_pos_right.y = height(adj_pos_right.xz);
-	vec4 adj_pos_top = 		position + vec4(0, 0, DataIn[0].patch_length / DataIn[0].ringTess, 0); adj_pos_top.y = height(adj_pos_top.xz);
+  
+	vec4 adj_pos_left = 	  position - vec4(DataIn[0].patch_length / DataIn[0].ringTess, 0, 0, 0); adj_pos_left.y = height(adj_pos_left.xz);
+	vec4 adj_pos_right = 	  position + vec4(DataIn[0].patch_length / DataIn[0].ringTess, 0, 0, 0); adj_pos_right.y = height(adj_pos_right.xz);
+	vec4 adj_pos_top = 		  position + vec4(0, 0, DataIn[0].patch_length / DataIn[0].ringTess, 0); adj_pos_top.y = height(adj_pos_top.xz);
 	vec4 adj_pos_bottom = 	position - vec4(0, 0, DataIn[0].patch_length / DataIn[0].ringTess, 0); adj_pos_bottom.y = height(adj_pos_bottom.xz);
 
   x0 = adj_pos_left;
@@ -175,23 +176,21 @@ void main() {
   z0 = adj_pos_bottom;
 
 	// Calculating the vectors whose cross product will return the normal
-	//vec4 vecX = adj_pos_right - adj_pos_left;
-	//vec4 vecZ = adj_pos_top - adj_pos_bottom;
-  vec4 vecX = vec4(2 * DataIn[0].patch_length * DataIn[0].ringTess, adj_pos_right.y - adj_pos_left.y, 0, 0);
-	vec4 vecZ = vec4(0, adj_pos_top.y - adj_pos_bottom.y, 2 * DataIn[0].patch_length * DataIn[0].ringTess, 0);
+	vec4 vecX = adj_pos_right - adj_pos_left;
+	vec4 vecZ = adj_pos_top - adj_pos_bottom;
 
 	// Recalculating the normal at the current position
 	//DataOut.normal = normalize(cross(vecX.xyz, vecZ.xyz));
   //normal = vec3(0,1,0);
   //normal = normalize(vecZ.xyz);
-	normal = normalize(cross(vecZ.xyz, vecX.xyz));
+	normal = normalize( inverse(transpose(mat3(m_view))) * cross(vecZ.xyz, vecX.xyz));
 	
 	/*DataOut.height = position.y;
 	//DataOut.texCoord = texCoord0;
-	DataOut.eye = normalize(vec3(-(viewMatrix * position)));
-	DataOut.light_dir = normalize(vec3(viewMatrix * - light_dir));*/
+	DataOut.eye = normalize(vec3(-(m_view * position)));
+	DataOut.light_dir = normalize(vec3(m_view * - light_dir));*/
 
-	//gl_Position = projectionViewMatrix * position;
+	//gl_Position = m_projView * position;
 	gl_Position = position;
 
 }

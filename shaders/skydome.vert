@@ -24,7 +24,7 @@ void main () {
 	DataOut.height = position.y;
 
 	// Transform the vertex coordinates
-	//gl_Position = m_projView * ((m_model * position) + vec4(camera_pos.x, 0, camera_pos.z + 8, 0));	
-	gl_Position = m_projView * (m_model * position);	
+	gl_Position = m_projView * ((m_model * position) + vec4(camera_pos.x, 0, camera_pos.z + 8, 0));	
+	//gl_Position = m_projView * (m_model * position);	
 	
 }

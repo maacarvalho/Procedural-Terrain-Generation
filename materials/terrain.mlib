@@ -24,11 +24,11 @@
 									te = "../shaders/terrain.tese" 
 									ps = "../shaders/terrain.frag" />
 
-		<!-- <shader name="tNormals"		vs = "../shaders/terrain.vert" 
+		<shader name="tNormals"		vs = "../shaders/terrain.vert" 
 									tc = "../shaders/terrain.tesc" 
 									te = "../shaders/terrainNormal.tese" 
 									gs = "../shaders/terrainNormal.geom" 
-									ps = "../shaders/terrainNormal.frag" /> -->
+									ps = "../shaders/terrainNormal.frag" />
 
 		<shader name="skydome"		vs = "../shaders/skydome.vert"
 									ps = "../shaders/skydome.frag" />
@@ -226,6 +226,83 @@
           			<valueof uniform="height_noise_octaves"
                				type="RENDERER" context="CURRENT"
                				component="HEIGHT_NOISE_OCTAVES" />
+				</values>
+			</shader>
+		</material>
+		
+		
+		<material name="TerrainNormals">
+			<shader name="tNormals">
+				<values>
+
+					<!-- Spaces Matrixes -->
+
+					<valueof uniform="m_projViewModel" 
+							type="RENDERER" context="CURRENT" 
+							component="PROJECTION_VIEW_MODEL" />
+
+					<valueof uniform="m_projView" 
+							type="RENDERER" context="CURRENT" 
+							component="PROJECTION_VIEW" />
+
+					<valueof uniform="m_viewModel" 
+							type="RENDERER" context="CURRENT" 
+							component="VIEW_MODEL" />
+
+					<valueof uniform="m_model" 
+							type="RENDERER" context="CURRENT" 
+							component="MODEL" />
+							 
+					<valueof uniform="m_view" 
+							type="RENDERER" context="CURRENT" 
+							component="VIEW" />
+					
+					<!-- Height Noise -->
+
+					<valueof uniform="height_noise_frequency"
+							type="RENDERER" context="CURRENT"
+							component="HEIGHT_NOISE_FREQUENCY" />
+
+					<valueof uniform="height_noise_amplitude"
+							type="RENDERER" context="CURRENT"
+							component="HEIGHT_NOISE_AMPLITUDE" /> 
+
+					<valueof uniform="height_noise_power"
+							type="RENDERER" context="CURRENT"
+							component="HEIGHT_NOISE_POWER" /> 
+
+					<valueof uniform="height_noise_lacunarity"
+							type="RENDERER" context="CURRENT"
+							component="HEIGHT_NOISE_LACUNARITY" />
+					
+					<valueof uniform="height_noise_persistance"
+							type="RENDERER" context="CURRENT"
+							component="HEIGHT_NOISE_PERSISTANCE" />
+          
+          			<valueof uniform="height_noise_octaves"
+               				type="RENDERER" context="CURRENT"
+               				component="HEIGHT_NOISE_OCTAVES" />
+
+					<!-- Camera -->
+
+					<valueof uniform="camera_pos"
+							 type="CAMERA" context="CURRENT"
+							 component="POSITION" /> 
+
+					<!-- <valueof uniform="camera_dir"
+							 type="CAMERA" context="CURRENT"
+							 component="VIEW" /> -->
+
+					<!-- Tessellation -->
+					
+					<valueof uniform="tessellation_ratio"
+					 		type="RENDERER" context="CURRENT" 
+							component="TESSELLATION_DECREASE_RATIO"  />
+														
+					<valueof uniform="max_tessellation"
+					 		type="RENDERER" context="CURRENT" 
+							component="MAX_TESSELLATION"  />
+
 				</values>
 			</shader>
 		</material>

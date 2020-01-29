@@ -158,20 +158,20 @@
 					<map fromMaterial="*" toMaterial="Terrain" toLibrary="TerrainLib" />
 				</materialMaps>
 			</pass>
-			<!-- <pass class="default" name="passQuadNormal">				
+			<!-- <pass class="default" name="GroundViewNormals">				
 				<COLOR_CLEAR value=false />				
 				<DEPTH_CLEAR value=false />				
 				<scenes instances=15625>					
 					<scene name="TerrainSceneNormals" />				
 				</scenes>				
-				<camera name="MainCamera" />				
+				<camera name="GroundCamera" />				
 				<lights>					
 					<light name="Sun" />			
 				</lights>			
 				<materialMaps>
 					<map fromMaterial="*" toLibrary="TerrainLib" toMaterial="TerrainNormals" />
 				</materialMaps>						
-			</pass>	 -->
+			</pass> -->
 			<!-- <pass class="default" name="NoiseView" >
 				<viewport name="NoiseViewport" />
 				<camera name="NoiseCamera" />

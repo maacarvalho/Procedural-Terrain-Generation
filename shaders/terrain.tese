@@ -18,7 +18,7 @@ in Data {
 
 	vec4 posTC;
 	int side;
-    int patch_length;
+  int patch_length;
 	vec4 origin;
 	float ringTess;
 
@@ -31,6 +31,7 @@ out Data {
 	vec3 eye;
 	vec3 light_dir;
 	vec2 texCoord;
+  float inclination;
 
 } DataOut;
 
@@ -162,14 +163,22 @@ void main() {
 	vec4 adj_pos_top = 		position + vec4(0, 0, DataIn[0].patch_length / DataIn[0].ringTess, 0); adj_pos_top.y = height(adj_pos_top.xz);
 	vec4 adj_pos_bottom = 	position - vec4(0, 0, DataIn[0].patch_length / DataIn[0].ringTess, 0); adj_pos_bottom.y = height(adj_pos_bottom.xz);
 
+  //vec4 adj_pos_left = 	  position - vec4(0.03125, 0, 0, 0); adj_pos_left.y =   height(adj_pos_left.xz);
+	//vec4 adj_pos_right = 	  position + vec4(0.03125, 0, 0, 0); adj_pos_right.y =  height(adj_pos_right.xz);
+	//vec4 adj_pos_top = 		  position + vec4(0, 0, 0.03125, 0); adj_pos_top.y =    height(adj_pos_top.xz);
+	//vec4 adj_pos_bottom = 	position - vec4(0, 0, 0.03125, 0); adj_pos_bottom.y = height(adj_pos_bottom.xz);
+
 	// Calculating the vectors whose cross product will return the normal
 	vec4 vecX = adj_pos_right - adj_pos_left;
 	vec4 vecZ = adj_pos_top - adj_pos_bottom;
 
 	// Recalculating the normal at the current position
-	DataOut.normal = normalize(cross(vecX.xyz, vecZ.xyz));
+	//DataOut.normal = normalize(cross(vecX.xyz, vecZ.xyz));
+  DataOut.normal = normalize(cross(vecZ.xyz, vecX.xyz));
+  DataOut.inclination = DataOut.normal.y;
+  DataOut.normal = normalize(inverse(transpose(mat3(m_view))) * DataOut.normal);
 
-	DataOut.height = position.y / max_height();
+	DataOut.height = position.y / max_height() * 0.5 + 0.5;
 	DataOut.texCoord = vec2(u,v);
 	DataOut.eye = normalize(vec3(-(m_view * position)));
 	DataOut.light_dir = normalize(vec3(m_view * - light_dir));

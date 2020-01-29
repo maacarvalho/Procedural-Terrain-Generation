@@ -15,6 +15,7 @@ in Data {
 	vec3 eye;
 	vec3 light_dir;
 	vec2 texCoord;
+	float inclination;
 
 } DataIn;
 
@@ -43,30 +44,30 @@ void main() {
 		spec = specular * pow(intSpec, shininess);
 	}
 
-	//outputF = max(intensity * color + spec, color * 0.25);
+	outputF = max(intensity * color + spec, color * 0.25);
 
 	vec2 textCoordinates = DataIn.texCoord;
 	//vec2 textCoordinates = vec2(0,0);
 
 	vec4 tex;
 
-	if (DataIn.normal.y <= 0.5) {
+	if (DataIn.inclination <= 0.5) {
 		
 		tex = texture (rock_tex, textCoordinates);
 		
-	} else if (DataIn.normal.y <= 0.8) {
+	} else if (DataIn.inclination <= 0.8) {
 		
 		vec4 mossy_rock = texture (mossy_rock_tex, textCoordinates);
 		vec4 rock = texture (rock_tex, textCoordinates);
 		
-		tex = mix (mossy_rock, rock, smoothstep(0.4, 0.5, DataIn.normal.y));
+		tex = mix (mossy_rock, rock, smoothstep(0.4, 0.5, DataIn.inclination));
 	
 	} else { 
 
 		vec4 moss = texture(moss_tex, textCoordinates);
 		vec4 mossy_rock = texture (mossy_rock_tex, textCoordinates);
 		
-		tex = mix (moss, mossy_rock, smoothstep(0.2, 0.3, DataIn.normal.y));
+		tex = mix (moss, mossy_rock, smoothstep(0.2, 0.3, DataIn.inclination));
 
 	}
 

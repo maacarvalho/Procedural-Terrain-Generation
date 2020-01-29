@@ -15,6 +15,7 @@ void main() {
 
 	//if (DataIn.height >= 0)
 		outputF = texture(tex,DataIn.texCoord);
+		//outputF = vec4(1,1,1,0);
 	//else 
 		//outputF = vec4(0,0,0,1);
 
